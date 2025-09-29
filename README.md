@@ -17,5 +17,5 @@ Console app that lets you search movies, filter by genre & rating, read communit
 - `requests`, `python-dotenv`, `vaderSentiment`, `prettytable`
 - Optional: `praw` (Reddit) or TMDb reviews
 
-## Project Structure
+
 
