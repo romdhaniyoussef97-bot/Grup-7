@@ -17,5 +17,37 @@ Console app that lets you search movies, filter by genre & rating, read communit
 - `requests`, `python-dotenv`, `vaderSentiment`, `prettytable`
 - Optional: `praw` (Reddit) or TMDb reviews
 
+Project structure
+movie-recommender/
+│
+├─ api/
+│  ├─ __init__.py
+│  ├─ omdb_api.py          # talk to OMDb
+│  └─ reddit_api.py        # get Reddit comments (optional if no creds)
+│
+├─ models/
+│  ├─ __init__.py
+│  └─ movie_model.py       # Movie dataclass + helpers
+│
+├─ services/
+│  ├─ __init__.py
+│  └─ sentiment_service.py # VADER sentiment scoring
+│
+├─ storage/
+│  ├─ __init__.py
+│  └─ repo.py              # JSON or SQLite persistence
+│
+├─ config/
+│  ├─ __init__.py
+│  └─ settings.py          # reads API keys from .env
+│
+├─ data/
+│  ├─ favorites.json
+│  └─ cache.json           # (optional) store last queries
+│
+├─ app.py                  # menu / CLI UI
+├─ main.py                 # entry point
+├─ requirements.txt
+└─ .env.example            # where to put keys
 
 
