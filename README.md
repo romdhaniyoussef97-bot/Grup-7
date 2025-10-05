@@ -22,7 +22,7 @@ movie-recommender/
 │
 ├─ api/
 │  ├─ __init__.py
-│  ├─ omdb_api.py          # talk to OMDb
+│  ├─ tmdb_api.py          # talk to TMDB
 │  └─ reddit_api.py        # get Reddit comments (optional if no creds)
 │
 ├─ models/
