@@ -3,6 +3,7 @@ from models.movie_model import Movie
 from storage.repo import save_favorite, load_favorites
 from prettytable import PrettyTable
 
+
 class App:
     def __init__(self):
         self.api = TMDB_API()
@@ -13,9 +14,8 @@ class App:
         while self.running:
             print("\n Welcome to Movie Recommender+")
             print("1. Search movie by title")
-            print("2. Discover by genre & rating")
-            print("3. Get random movie")
-            print("4. Show favorites")
+            print("2. Get random movie")
+            print("3. Show favorites")
             print("0. Exit")
 
             choice = input("\nSelect an option: ").strip()
@@ -23,13 +23,11 @@ class App:
             if choice == "1":
                 self.search_movie_flow()
             elif choice == "2":
-                self.genre_discover_flow()
-            elif choice == "3":
                 self.random_movie_flow()
-            elif choice == "4":
+            elif choice == "3":
                 self.show_favorites()
             elif choice == "0":
-                print("👋 Goodbye!")
+                print("Goodbye!")
                 self.running = False
             else:
                 print("Invalid choice. Try again.")
@@ -39,7 +37,7 @@ class App:
         title = input("\nEnter movie title: ").strip()
         results = self.api.search_movie(title)
         if not results:
-            print("❌ No movies found.")
+            print("No movies found.")
             return
 
         table = PrettyTable(["#", "Title", "Year", "Rating"])
@@ -53,7 +51,7 @@ class App:
                 return
             selected = results[choice - 1]
         except (ValueError, IndexError):
-            print("❌ Invalid selection.")
+            print("Invalid selection.")
             return
 
         movie = Movie(
@@ -67,38 +65,40 @@ class App:
         self.display_movie(movie)
         self.ask_save(movie)
 
-    # --- Option 2: Discover by genre & rating ---
-    def genre_discover_flow(self):
-        genres = self.api.get_genres()
-        print("\nAvailable Genres:")
-        for g in genres:
-            print("-", g)
-
-        chosen = input("\nEnter one or more genres (separated by spaces): ").strip()
-        rating = input("Minimum rating (1–10, press Enter to skip): ").strip()
-        rating = float(rating) if rating else None
-
-        movie = self.api.get_random_movie(genre=chosen, vote_average_gte=rating)
-        if not movie:
-            print("❌ Could not find a movie with those filters.")
-            return
-
-        movie_obj = Movie(**movie)
-        self.display_movie(movie_obj)
-        self.ask_save(movie_obj)
-
-    # --- Option 3: Random movie ---
+    # --- Option 2: Random movie (with optional genre) ---
     def random_movie_flow(self):
-        movie = self.api.get_random_movie()
+        """Allows user to get a random movie, optionally filtered by genre."""
+        choose_genre = input("\nDo you want to choose a genre? (y/n): ").lower().strip()
+
+        selected_genre = None
+        if choose_genre == "y":
+            genres = self.api.get_genres()
+            print("\nAvailable Genres:")
+            for idx, g in enumerate(genres, start=1):
+                print(f"{idx}. {g}")
+
+            try:
+                num = input("\nEnter genre number or press Enter for full random: ").strip()
+                if num:
+                    num = int(num)
+                    if 1 <= num <= len(genres):
+                        selected_genre = genres[num - 1]
+                    else:
+                        print("Invalid number, continuing with full random.")
+                # if Enter pressed, keep selected_genre = None
+            except ValueError:
+                print("Invalid input, continuing with full random.")
+
+        movie = self.api.get_random_movie(genre=selected_genre)
         if not movie:
-            print("❌ No movie found.")
+            print("No movie found.")
             return
 
         m = Movie(**movie)
         self.display_movie(m)
         self.ask_save(m)
 
-    # --- Option 4: Show favorites ---
+    # --- Option 3: Show favorites ---
     def show_favorites(self):
         favorites = load_favorites()
         if not favorites:
@@ -115,13 +115,14 @@ class App:
         choice = input("Save to favorites? (y/n): ").lower().strip()
         if choice == "y":
             save_favorite(movie.__dict__)
-            print("✅ Movie saved to favorites!")
+            print("Movie saved to favorites!")
 
     def display_movie(self, movie):
         print(f"\n {movie.title} ({movie.year})")
         print(f"Genre: {movie.genre}")
         print(f"Rating: {movie.rating}")
         print(f"Plot: {movie.plot}")
+
 
 # --- Entry point for testing ---
 if __name__ == "__main__":
