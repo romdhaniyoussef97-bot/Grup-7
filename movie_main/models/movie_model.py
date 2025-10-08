@@ -40,3 +40,20 @@ class Movie:
             int(data.get("year", 0)),
             data.get("plot", "Okänd plot")
         )
+
+    @staticmethod
+    def show_favorites(favorites):
+        print("\n" + "=" * 50)
+        print("💖 DINA FAVORITFILMER 💖".center(50))
+        print("=" * 50)
+
+        if favorites:
+            for i, movie in enumerate(favorites, start=1):
+                print(f"\n{i}. 🎥 {movie.title} ({movie.year})")
+                print(f"   🎭 Genre: {movie.genre}")
+                print(f"   ⭐ Betyg: {movie.rating}")
+            print("\n Totalt antal favoriter", len(favorites))
+        else:
+            print("Du har inga favoritfilmern ännu.")
+        
+        print("=" * 50)
