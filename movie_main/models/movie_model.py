@@ -1,11 +1,12 @@
 from datetime import datetime
 
 class Movie:
-    def __init__(self, title: str, genre: str, rating: float, year: int):
+    def __init__(self, title: str, genre: str, rating: float, year: int, plot: str):
         self.title = title
         self.genre = genre
         self.rating = rating
         self.year = year
+        self.plot = plot
 
     def show_info(self):
         if self.rating >= 7.0:
@@ -18,7 +19,7 @@ class Movie:
         current_year = datetime.now().year
         age = current_year - self.year
 
-        print(f"\n{self.title} ({self.year}) - IMBD: {self.rating} {status} {self.year}")
+        print(f"\n{self.title} ({self.year}) - IMBD: {self.rating} {status} {self.year} {self.plot}")
         print(f"\n filmen är {age} år gammal")
     
     def to_dict(self):
@@ -26,7 +27,8 @@ class Movie:
             "title": self.title,
             "genre": self.genre,
             "rating": self.rating,
-            "year": self.year
+            "year": self.year,
+            "plot": self.plot
         }
     
     @classmethod
@@ -35,5 +37,6 @@ class Movie:
             data.get("title", "Okänd titel"),
             data.get("genre", "Okänd genre"),
             float(data.get("rating", 0.0)),
-            int(data.get("year", 0))
+            int(data.get("year", 0)),
+            data.get("plot", "Okänd plot")
         )
