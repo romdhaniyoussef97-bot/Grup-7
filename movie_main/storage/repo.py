@@ -46,14 +46,18 @@ class FavoritesManager:
 #favorites = manager.show_favorites()
      
 
-    def edit_favorites(self):
+def edit_favorites(self):
         
-    # 1️⃣ Load favorites from JSON (like show_favorites)
-    
-    # 2️⃣ Check if list is empty → if so, return or show message
-    
-    # 3️⃣ Loop through favorites with enumerate(start=1)
-        # Print: number + film title only
+    if not os.path.exists(self.filename):
+        return []  # Returnera tom lista om filen inte finns
+
+    try:
+        with open(self.filename, "r", encoding="utf-8") as f:
+            favorites = json.load(f)
+            return favorites if favorites else []  # Tom fil
+            
+        except json.JSONDecodeError:
+            return []
 
         numbered_list = [(i, film["title"]) for i, film in enumerate(favorites, start=1)]
         return numbered_list
