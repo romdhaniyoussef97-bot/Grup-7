@@ -1,130 +1,89 @@
 from api.tmdb_api import TMDB_API
 from models.movie_model import Movie
-from storage.repo import save_favorite, load_favorites
-from prettytable import PrettyTable
-
+from storage.repo import FavoritesManager
 
 class App:
     def __init__(self):
         self.api = TMDB_API()
+        self.fav_manager = FavoritesManager("data/favorites.json")
         self.running = True
 
     def run(self):
-        """Main loop that keeps the app running until user exits."""
         while self.running:
-            print("\n Welcome to Movie Recommender+")
-            print("1. Search movie by title")
-            print("2. Get random movie")
-            print("3. Show favorites")
-            print("0. Exit")
+            print("\n=== MOVIE RECOMMENDER ===")
+            print("1. Hämta slumpmässig film (med genreval)")
+            print("2. Visa favoriter")
+            print("3. Redigera favoriter")
+            print("0. Avsluta")
 
-            choice = input("\nSelect an option: ").strip()
+            choice = input("\nVälj ett alternativ: ").strip()
 
             if choice == "1":
-                self.search_movie_flow()
-            elif choice == "2":
                 self.random_movie_flow()
-            elif choice == "3":
+            elif choice == "2":
                 self.show_favorites()
+            elif choice == "3":
+                self.edit_favorites()
             elif choice == "0":
-                print("Goodbye!")
+                print("Programmet avslutas.")
                 self.running = False
             else:
-                print("Invalid choice. Try again.")
+                print("Ogiltigt val, försök igen.")
 
-    # --- Option 1: Search movie by title ---
-    def search_movie_flow(self):
-        title = input("\nEnter movie title: ").strip()
-        results = self.api.search_movie(title)
-        if not results:
-            print("No movies found.")
-            return
+    def random_movie_flow(self):
+        genres = self.api.get_genres()
+        print("\nTillgängliga genrer:")
+        for i, g in enumerate(genres, start=1):
+            print(f"{i}. {g}")
 
-        table = PrettyTable(["#", "Title", "Year", "Rating"])
-        for i, m in enumerate(results, start=1):
-            table.add_row([i, m.get("title"), m.get("release_date", "")[:4], m.get("vote_average")])
-        print(table)
-
-        try:
-            choice = int(input("Select a movie number to view details (0 to cancel): "))
-            if choice == 0:
+        selected = input("\nAnge genrens nummer (flera nummer separerade med mellanslag, eller tryck Enter för slumpad): ").strip()
+        if selected:
+            try:
+                indexes = [int(x) - 1 for x in selected.split()]
+                chosen_genres = [genres[i] for i in indexes if 0 <= i < len(genres)]
+            except ValueError:
+                print("Felaktig inmatning. Välj siffror.")
                 return
-            selected = results[choice - 1]
-        except (ValueError, IndexError):
-            print("Invalid selection.")
+        else:
+            chosen_genres = []
+
+        rating_input = input("Minsta betyg (1–10, tryck Enter för standard 6.5): ").strip()
+        try:
+            rating = float(rating_input) if rating_input else 6.5
+        except ValueError:
+            rating = 6.5
+
+        movie_data = self.api.get_random_movie(genre=chosen_genres, vote_average_gte=rating)
+        if not isinstance(movie_data, dict):
+            print(movie_data)
             return
 
         movie = Movie(
-            title=selected.get("title"),
-            year=selected.get("release_date", "")[:4],
-            genre="N/A",
-            rating=selected.get("vote_average"),
-            plot=selected.get("overview", "No description.")
+            title=movie_data.get("title", "Okänd titel"),
+            genre=movie_data.get("genre", "Okänd genre"),
+            rating=movie_data.get("rating", 0.0),
+            year=int(str(movie_data.get("release_date", "0"))[:4]) if movie_data.get("release_date") else 0,
+            plot=movie_data.get("plot", "Ingen beskrivning tillgänglig.")
         )
 
-        self.display_movie(movie)
+        movie.show_info()
         self.ask_save(movie)
 
-    # --- Option 2: Random movie (with optional genre) ---
-    def random_movie_flow(self):
-        """Allows user to get a random movie, optionally filtered by genre."""
-        choose_genre = input("\nDo you want to choose a genre? (y/n): ").lower().strip()
-
-        selected_genre = None
-        if choose_genre == "y":
-            genres = self.api.get_genres()
-            print("\nAvailable Genres:")
-            for idx, g in enumerate(genres, start=1):
-                print(f"{idx}. {g}")
-
-            try:
-                num = input("\nEnter genre number or press Enter for full random: ").strip()
-                if num:
-                    num = int(num)
-                    if 1 <= num <= len(genres):
-                        selected_genre = genres[num - 1]
-                    else:
-                        print("Invalid number, continuing with full random.")
-                # if Enter pressed, keep selected_genre = None
-            except ValueError:
-                print("Invalid input, continuing with full random.")
-
-        movie = self.api.get_random_movie(genre=selected_genre)
-        if not movie:
-            print("No movie found.")
-            return
-
-        m = Movie(**movie)
-        self.display_movie(m)
-        self.ask_save(m)
-
-    # --- Option 3: Show favorites ---
-    def show_favorites(self):
-        favorites = load_favorites()
-        if not favorites:
-            print("\nNo saved favorites yet.")
-            return
-
-        table = PrettyTable(["Title", "Year", "Rating"])
-        for f in favorites:
-            table.add_row([f.get("title"), f.get("year"), f.get("rating")])
-        print(table)
-
-    # --- Helper functions ---
     def ask_save(self, movie):
-        choice = input("Save to favorites? (y/n): ").lower().strip()
-        if choice == "y":
-            save_favorite(movie.__dict__)
-            print("Movie saved to favorites!")
+        choice = input("\nVill du spara filmen i favoriter? (j/n): ").lower().strip()
+        if choice == "j":
+            self.fav_manager.save_favorites(movie.to_dict())
+            print(f"Filmen '{movie.title}' har sparats i favoriter.")
 
-    def display_movie(self, movie):
-        print(f"\n {movie.title} ({movie.year})")
-        print(f"Genre: {movie.genre}")
-        print(f"Rating: {movie.rating}")
-        print(f"Plot: {movie.plot}")
+    def show_favorites(self):
+        favorites = self.fav_manager.show_favorites()
+        movie_objects = [Movie.from_dict(f) for f in favorites]
+        Movie.show_favorites(movie_objects)
+
+    def edit_favorites(self):
+        self.fav_manager.edit_favorites()
 
 
-# --- Entry point for testing ---
 if __name__ == "__main__":
     app = App()
     app.run()
