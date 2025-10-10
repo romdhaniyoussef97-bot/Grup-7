@@ -7,9 +7,8 @@ import os
 class FavoritesManager:
     def __init__(self, filename):
         self.filename = filename
-        self.favorites = []  # kan fyllas med load_favorites senare
 
-    def save_favorites(self, film):
+    def save_favorites(self, movie):
         if not os.path.exists(self.filename):    #Om filen inte finns, gör lista
             favorites = []
         
@@ -20,7 +19,7 @@ class FavoritesManager:
             except json.JSONDecodeError:
                 favorites = []
         
-        favorites.append(film) #lägg filmen i listan
+        favorites.append(movie.to_dict()) #lägg filmen i listan
     
         with open(self.filename, "w", encoding="utf-8") as f:    # Öppna .json igen och skriv nya listan i filen.
             json.dump(favorites, f, indent=4, ensure_ascii=False)
