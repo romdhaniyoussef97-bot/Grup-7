@@ -66,25 +66,64 @@ class App:
             plot=movie_data.get("plot", "Ingen beskrivning tillgänglig.")
         )
 
-        movie.show_info()
+        self.display_movie(movie)
         self.ask_save(movie)
 
     def ask_save(self, movie):
         choice = input("\nVill du spara filmen i favoriter? (j/n): ").lower().strip()
         if choice == "j":
-            self.fav_manager.save_favorites(movie.to_dict())
+            self.fav_manager.save_favorites(movie)
             print(f"Filmen '{movie.title}' har sparats i favoriter.")
 
     def show_favorites(self):
         favorites = self.fav_manager.show_favorites()
-        movie_objects = [Movie.from_dict(f) for f in favorites]
-        Movie.show_favorites(movie_objects)
+        if not favorites:
+            print("\nDu har inga favoriter ännu.")
+            return
+
+        print("\n=== DINA FAVORITFILMER ===")
+        for i, data in enumerate(favorites, start=1):
+            title = data.get("title", "Okänd titel")
+            genre = data.get("genre", "Okänd genre")
+            rating = data.get("rating", "N/A")
+            year = data.get("year", "Okänt år")
+            plot = data.get("plot", "")
+            print(f"\n{i}. {title} ({year})")
+            print(f"   Genre: {genre}")
+            print(f"   Betyg: {rating}")
+            print(f"   {plot[:120]}...")
 
     def edit_favorites(self):
-        self.fav_manager.edit_favorites()
+        favorites = self.fav_manager.show_favorites()
+        if not favorites:
+            print("\nDet finns inga filmer att redigera.")
+            return
+
+        print("\n=== REDIGERA FAVORITER ===")
+        for i, film in enumerate(favorites, start=1):
+            print(f"{i}. {film.get('title', 'Okänd titel')}")
+
+        choice = input("Ange numret på filmen du vill ta bort (eller 'a' för att ta bort alla): ").strip().lower()
+
+        if choice == 'a':
+            favorites = []
+            print("Alla favoriter har tagits bort.")
+        else:
+            try:
+                index = int(choice) - 1
+                if 0 <= index < len(favorites):
+                    removed = favorites.pop(index)
+                    print(f"Filmen '{removed.get('title', 'Okänd titel')}' har tagits bort.")
+                else:
+                    print("Ogiltigt val.")
+            except ValueError:
+                print("Felaktig inmatning.")
+
+        import json
+        with open(self.fav_manager.filename, "w", encoding="utf-8") as f:
+            json.dump(favorites, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
     app = App()
     app.run()
- 
