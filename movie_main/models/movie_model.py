@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class Movie:
-    def __init__(self, title: str, genre: str, rating: float, year: int, plot: str):
+    def __init__(self, title: str, genre: str, rating: float, year: int, plot: str = "Okänd plot"):
         self.title = title
         self.genre = genre
         self.rating = rating
@@ -9,6 +9,8 @@ class Movie:
         self.plot = plot
 
     def show_info(self):
+        genre = ", ".join(self.genre) if isinstance(self.genre, list) else self.genre
+
         if self.rating >= 7.0:
             status = "Populär"
         elif self.rating >= 5.0:
@@ -19,7 +21,7 @@ class Movie:
         current_year = datetime.now().year
         age = current_year - self.year
 
-        print(f"\n{self.title} ({self.year}) - IMBD: {self.rating} {status} {self.year} {self.plot}")
+        print(f"\n{self.title} ({self.year}) - IMBb: {self.rating} {status} {self.plot}")
         print(f"\n filmen är {age} år gammal")
     
     def to_dict(self):
@@ -43,17 +45,24 @@ class Movie:
 
     @staticmethod
     def show_favorites(favorites):
-        print("\n" + "=" * 50)
-        print("💖 DINA FAVORITFILMER 💖".center(50))
-        print("=" * 50)
+
+        formatted_favorites = []
 
         if favorites:
             for i, movie in enumerate(favorites, start=1):
-                print(f"\n{i}. 🎥 {movie.title} ({movie.year})")
-                print(f"   🎭 Genre: {movie.genre}")
-                print(f"   ⭐ Betyg: {movie.rating}")
-            print("\n Totalt antal favoriter", len(favorites))
+                title = getattr(movie, 'title', movie.get("title", "Okänd titel"))
+                year = getattr(movie, 'year', movie.get("year", "Okänd år"))
+                genre = getattr(movie, 'genre', movie.get("genre", "Okänd genre"))
+                rating = getattr(movie, 'rating', movie.get("rating", "Okänd rating"))
+
+                if isinstance(genre, list):
+                    genre = ", ".join(genre)
+                
+                formatted_favorites.append(
+                    f"{i}. 🎥{title} {year} |  🎭 {genre} | ⭐ {rating}"
+                )
         else:
-            print("Du har inga favoritfilmern ännu.")
+            formatted_favorites.append("Du har inga favoriter än.")
         
-        print("=" * 50)
+        return formatted_favorites
+       
