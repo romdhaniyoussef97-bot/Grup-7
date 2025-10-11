@@ -1,75 +1,73 @@
 import json
-import os
 
-#En klass som behållare för all funktionalitet kring favoriter.
-#Tre metoder för att spara, läsa och radera favoriter-listan i json.
+# En klass som behållare för all funktionalitet kring favoriter.
+# Tre metoder: spara, läsa och radera favoriter-listan i JSON.
 
 class FavoritesManager:
     def __init__(self, filename):
         self.filename = filename
 
-    def save_favorites(self, movie):
-        if not os.path.exists(self.filename):    #Om filen inte finns, gör lista
+    def save_favorites(self, movie):                        # Spara en film
+        try:
+                                                        # Om filen finns, läs vad som finns i den
+            with open(self.filename, "r", encoding="utf-8") as f:
+                favorites = json.load(f)
+        except (json.JSONDecodeError, FileNotFoundError):
+                                                            # Om filen saknas eller är tom/ogiltig, skapa tom lista
             favorites = []
-        
+
+                                            # Kolla så att filmen inte redan finns i listan
+        if not any(f["title"] == movie.title for f in favorites):
+            favorites.append(movie.to_dict())  # Lägg filmen i listan
+
+
+            with open(self.filename, "w", encoding="utf-8") as f:
+                json.dump(favorites, f, indent=4, ensure_ascii=False) # Spara den nya listan i JSON-filen
+
+            # Returnera bekräftelse till UI
+            return {"success": True, "message": f"Filmen '{movie.title}' har sparats."}
         else:
-            try:
-                with open(self.filename, "r", encoding="utf-8") as f: #Om filen finns, läs vad som finns i den och lägg till i favorites
-                    favorites = json.load(f)
-            except json.JSONDecodeError:
-                favorites = []
-        
-        favorites.append(movie.to_dict()) #lägg filmen i listan
-    
-        with open(self.filename, "w", encoding="utf-8") as f:    # Öppna .json igen och skriv nya listan i filen.
-            json.dump(favorites, f, indent=4, ensure_ascii=False)
+            return {"success": False, "message": f"Filmen '{movie.title}' finns redan i favoriter."}
 
+    # Funktion för att ta fram en lista med filmer ur JSON
 
-    def show_favorites(self):
-
-        if not os.path.exists(self.filename):
-            return []  # Returnera tom lista om filen inte finns
-
+    def get_favorites(self):
         try:
             with open(self.filename, "r", encoding="utf-8") as f:
                 favorites = json.load(f)
-                return favorites if favorites else []  # Tom fil
+
+                # Returnera listan om det finns något i den, annars en tom lista
+                return favorites if favorites else []
             
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, FileNotFoundError):
             return []
 
-#Till ANDY:
+    # Funktion för att radera en film ur JSON
 
-#manager = FavoritesManager('data/favorites.json')
-
-#favorites = manager.show_favorites()
-     
-
-def edit_favorites(self):
-        
-    if not os.path.exists(self.filename):
-        return []  # Returnera tom lista om filen inte finns
-
-    try:
-        with open(self.filename, "r", encoding="utf-8") as f:
-            favorites = json.load(f)
-            return favorites if favorites else []  # Tom fil
-            
-        except json.JSONDecodeError:
+    def remove_favorite(self, index_to_remove):  #index to remove användarens val från UI
+       
+        favorites = self.get_favorites()    # Hämtar listan med filmer
+        if not favorites:                   # Om listan är tom
             return []
 
-        numbered_list = [(i, film["title"]) for i, film in enumerate(favorites, start=1)]
-        return numbered_list
+        # Kolla att användarens val finns i listans intervall
+
+        if 0 <= index_to_remove < len(favorites):
+            removed_movie = favorites.pop(index_to_remove)  # skapar variabel med borttagna filmen
+        with open(self.filename, "w", encoding="utf-8") as f:
+        # Spara uppdaterad lista utan vald film tillbaka till JSON
+            json.dump(favorites, f, indent=4, ensure_ascii=False)
+
+            return {"success": True, "Removed_movie": removed_movie}  # Returnera filmen som togs bort
+        else:
+            return {"success": False, "message": "Ogiltigt val. Ingen film raderades."}
+
+
+    # Funktion för att radera alla favoriter i JSON
+    def clear_favorites(self):
+        with open(self.filename, "w", encoding="utf-8") as f:
+            favorites = []  # Skapa tom lista
+            json.dump(favorites, f, indent=4, ensure_ascii=False)  # Skriv tom lista till filen
+        return {"success": True, "message": "Alla favoriter har raderats."}
 
     
-    # 4️⃣ Decide on parameters:
-        # remove_index → which movie to delete (passed in by UI)
-        # clear_all → delete all movies (passed in by UI)
-    
-    # 5️⃣ Apply deletion:
-        # If clear_all: favorites = []
-        # If remove_index: delete the correct movie (careful with 0-based index)
-    
-    # 6️⃣ Save updated list back to JSON
-    
-    # 7️⃣ Return updated list or status message (so UI can show feedback)
