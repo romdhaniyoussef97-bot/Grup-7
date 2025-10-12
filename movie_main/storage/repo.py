@@ -43,8 +43,8 @@ class FavoritesManager:
 
         if 0 <= index_to_remove < len(favorites):
             removed_movie = favorites.pop(index_to_remove)  
-        with open(self.filename, "w", encoding="utf-8") as f:
-            json.dump(favorites, f, indent=4, ensure_ascii=False)
+            with open(self.filename, "w", encoding="utf-8") as f:
+                json.dump(favorites, f, indent=4, ensure_ascii=False)
 
             return {"success": True, "Removed_movie": removed_movie}
         else:
