@@ -21,12 +21,15 @@ class Movie:
         current_year = datetime.now().year
         age = current_year - self.year
 
-        return (f"🎥 {self.title} ({self.year})\n"
-                f"   Genrer: {genre}\n"
-                f"   Betyg: {self.rating} - {status}\n"
-                f"   Ålder: {age} år\n"
-                f"   Handling: {self.plot}\n")
+        return (f"\n🎥 {self.title} ({self.year})\n"
+                f"🎭 Genre: {genre}\n"
+                f"⭐ Betyg: {self.rating} ({status})\n"
+                f"⏳ Ålder: {age} år\n"
+                f"📝 Handling: {self.plot}\n")
+        
 
+        
+    
     def to_dict(self):
         return{
             "title": self.title,
@@ -56,25 +59,24 @@ class Movie:
             return formatted_favorites
 
         for i, movie in enumerate(favorites, start=1):
-         if isinstance(movie, dict):
-            title = movie.get("title", "Okänd titel")
-            year = movie.get("year", "Okänd år")
-            genre = movie.get("genre", "Okänd genre")
-            rating = movie.get("rating", "Okänd rating")
+            if isinstance(movie, dict):
+                title = movie.get("title", "Okänd titel")
+                year = movie.get("year", "Okänd år")
+                genre = movie.get("genre", "Okänd genre")
+                rating = movie.get("rating", "Okänd rating")
 
-        else:
-            title = getattr(movie, "title", ("title", "Okänd titel"))
-            year = getattr(movie, 'year',("year", "Okänd år"))
-            genre = getattr(movie, 'genre',("genre", "Okänd genre"))
-            rating = getattr(movie, 'rating',("rating", "Okänd rating"))
+            else:
+                title = getattr(movie, "title", ("title", "Okänd titel"))
+                year = getattr(movie, 'year',("year", "Okänd år"))
+                genre = getattr(movie, 'genre',("genre", "Okänd genre"))
+                rating = getattr(movie, 'rating',("rating", "Okänd rating"))
 
-        if isinstance(genre, list):
-                genre = ", ".join(genre)
+            if isinstance(genre, list):
+                    genre = ", ".join(genre)
                 
-        formatted_favorites.append(
-            f"{i}. 🎥{title} {year} |  🎭 {genre} | ⭐ {rating}"
-        )
-    
-        
+            formatted_favorites.append(
+                f"{i}. 🎥{title} {year} |  🎭 {genre} | ⭐ {rating}"
+            )
+
         return formatted_favorites
        
