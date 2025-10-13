@@ -1,53 +1,87 @@
-# Grup-7
-Jensen AI dev. 
-# Grup-7 · Movie Recommender
+🎬 Movie Recommender
 
-Console app that lets you search movies, filter by genre & rating, read community sentiment from reviews, and save favorites.
+Movie Recommender är ett Python-program som genererar slumpmässiga filmtips baserat på användarens val av genre och betyg.
+Filmerna hämtas i realtid från The Movie Database (TMDB) via deras API.
+Användaren kan även spara sina favoritfilmer lokalt i en JSON-fil.
 
-## Features
-- 🔎 Search movies by title
-- 🏷️ Browse by genre/category
-- ⭐ Filter by rating (vote average & minimum vote count)
-- 💬 Pull reviews and show quick sentiment (VADER)
-- 💾 Save/remove favorites (JSON; switchable to SQLite)
-- 🔁 Get related recommendations
+🚀 Funktioner
 
-## Tech Stack
-- Python 3.11+
-- `requests`, `python-dotenv`, `vaderSentiment`, `prettytable`
-- Optional: `praw` (Reddit) or TMDb reviews
+Välj en eller flera genrer
 
-Project structure
-movie-recommender/
-│
-├─ api/
-│  ├─ __init__.py
-│  ├─ tmdb_api.py          # talk to TMDB
-│  └─ reddit_api.py        # get Reddit comments (optional if no creds)
-│
-├─ models/
-│  ├─ __init__.py
-│  └─ movie_model.py       # Movie dataclass + helpers
-│
-├─ services/
-│  ├─ __init__.py
-│  └─ sentiment_service.py # VADER sentiment scoring
-│
-├─ storage/
-│  ├─ __init__.py
-│  └─ repo.py              # JSON or SQLite persistence
-│
-├─ config/
-│  ├─ __init__.py
-│  └─ settings.py          # reads API keys from .env
-│
-├─ data/
-│  ├─ favorites.json
-│  └─ cache.json           # (optional) store last queries
-│
-├─ app.py                  # menu / CLI UI
-├─ main.py                 # entry point
-├─ requirements.txt
-└─ .env.example            # where to put keys
+Ange minimibetyg (1–10)
+
+Generera slumpmässig film via TMDB API
+
+Spara och visa favoritfilmer
+
+Ta bort enstaka eller alla favoriter
+
+⚙️ Installation och körning
+1️⃣ Klona projektet
+git clone https://github.com/romdhaniyoussef97-bot/Grup-7.git
+cd Grup-7
+
+2️⃣ Skapa en virtuell miljö (rekommenderas)
+python3 -m venv venv
+source venv/bin/activate   # macOS/Linux
+venv\Scripts\activate      # Windows
+
+3️⃣ Installera beroenden
+pip install -r requirements.txt
+
+🔑 TMDB API – .env-fil
+
+För att programmet ska fungera behöver du skapa en .env-fil i projektets rotmapp.
+Den används för att lagra din TMDB API-nyckel.
+
+Gör så här:
+
+Skapa en fil i projektets rotmapp som heter .env
+
+Klistra in följande rad:
+
+API_KEY=HÄR SKA DET VARA EN API-NYCKEL
 
 
+Spara filen
+
+💡 Du kan skapa en egen nyckel via:
+https://www.themoviedb.org/settings/api
+
+▶️ Kör programmet
+
+Starta programmet genom att köra:
+
+python movie_main/app.py
+
+📚 Använda bibliotek
+
+Externa bibliotek
+
+Bibliotek	Syfte
+requests	Hämtar data från TMDB API
+python-dotenv	Läser in miljövariabler (API-nyckeln) från .env
+random	Slumpar filmer och sidor i API-svaren
+json	Sparar och läser favoritfilmer till/från JSON
+pathlib	Hanterar filvägar på ett OS-oberoende sätt
+
+Standardbibliotek
+Bibliotek	Syfte
+os	Filvägar och miljöhantering
+typing	Typannoteringar (valfritt)
+
+👥 Team och ansvar
+Namn	Modul	Ansvar
+Fredrik	api/tmdb_api.py	Hanterar kommunikation med TMDB API och generering av filmdata
+Nick	storage/repo.py	Lagring till JSON – sparar, raderar och hanterar favoriter
+Youssef	app.py	Användargränssnitt (UI) – meny, val och utskrifter
+Andy	models/movie_model.py	Klass för filmobjekt – struktur, attribut och metoder
+🧠 Övrig information
+
+API: The Movie Database (TMDB)
+
+Lagring sker lokalt i data/favorites.json
+
+Programmet körs i terminalen
+
+Kräver Python 3.9 eller senare
