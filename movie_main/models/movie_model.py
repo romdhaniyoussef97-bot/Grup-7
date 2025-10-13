@@ -21,8 +21,12 @@ class Movie:
         current_year = datetime.now().year
         age = current_year - self.year
 
-        
-    
+        return (f"🎥 {self.title} ({self.year})\n"
+                f"   Genrer: {genre}\n"
+                f"   Betyg: {self.rating} - {status}\n"
+                f"   Ålder: {age} år\n"
+                f"   Handling: {self.plot}\n")
+
     def to_dict(self):
         return{
             "title": self.title,
