@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Fortunes of Captain Blood",
+        "genre": [
+            "Action",
+            "Adventure"
+        ],
+        "rating": 7.1,
+        "year": 1950,
+        "plot": "When he unwittingly sends some of his men into a trap, pirate Captain Peter Blood decides to rescue them. They've been taken prisoner by the Spanish Marquis de Riconete who is now using them as slave labor harvesting pearls from the sea."
+    },
+    {
+        "title": "The Three Musketeers: Adventure of Aramis",
+        "genre": [
+            "Action",
+            "Adventure"
+        ],
+        "rating": 6.9,
+        "year": 1989,
+        "plot": "In this reimagining of Alexandre Dumas's classic novel, the musketeer Aramis is secretly a woman in disguise, drawn to the elite corps after exacting revenge on her lover's murderer. Years later, plucky musketeer-in-waiting D'Artagnan is to be hanged for a crime he didn't commit. To exonerate her friend, Aramis must uncover the truth by navigating a twisting web of court conspiracies and her own past — without revealing her secret."
+    },
+    {
+        "title": "Mahabharat",
+        "genre": [
+            "Action",
+            "Adventure"
+        ],
+        "rating": 10.0,
+        "year": 1965,
+        "plot": "A version of the epic Indian poem \"The Mahabharata\", telling the story of the war between the families of the Pandavas and the Kauravas, descending from the same ancestor."
+    }
+]
