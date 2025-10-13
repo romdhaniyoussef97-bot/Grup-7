@@ -1,87 +1,56 @@
-🎬 Movie Recommender
+# Movie Recommender
 
-Movie Recommender är ett Python-program som genererar slumpmässiga filmtips baserat på användarens val av genre och betyg.
-Filmerna hämtas i realtid från The Movie Database (TMDB) via deras API.
-Användaren kan även spara sina favoritfilmer lokalt i en JSON-fil.
+## Beskrivning
+Movie Recommender är ett program som genererar slumpmässiga filmer baserat på genre och betyg som användaren väljer. Filmerna och all information hämtas från TMDB API.
 
-🚀 Funktioner
+## Installation och körning
 
-Välj en eller flera genrer
-
-Ange minimibetyg (1–10)
-
-Generera slumpmässig film via TMDB API
-
-Spara och visa favoritfilmer
-
-Ta bort enstaka eller alla favoriter
-
-⚙️ Installation och körning
-1️⃣ Klona projektet
+1. **Kloning av repository**
+```bash
 git clone https://github.com/romdhaniyoussef97-bot/Grup-7.git
 cd Grup-7
+```
 
-2️⃣ Skapa en virtuell miljö (rekommenderas)
-python3 -m venv venv
-source venv/bin/activate   # macOS/Linux
-venv\Scripts\activate      # Windows
-
-3️⃣ Installera beroenden
+2. **Installera beroenden**
+```bash
 pip install -r requirements.txt
+```
 
-🔑 TMDB API – .env-fil
+3. **Skapa en `.env`-fil i projektets root-mapp**  
+   Lägg in din TMDB API-nyckel:
+```
+API_KEY=DIN_API_NYCKEL_HÄR
+```
 
-För att programmet ska fungera behöver du skapa en .env-fil i projektets rotmapp.
-Den används för att lagra din TMDB API-nyckel.
+4. **Kör programmet**
+```bash
+python movie_main/UI/app.py
+```
 
-Gör så här:
+## Team och ansvarsområden
 
-Skapa en fil i projektets rotmapp som heter .env
+| Namn   | Modul / Ansvar |
+|--------|----------------|
+| Fredrik | `api/tmdb_api.py` – Hämtar data från TMDB API och hanterar API-förfrågningar |
+| Nick    | `storage/repo.py` – Lagring i JSON, hantering av favoriter (läsa, spara, ta bort) |
+| Youssef | `UI / app.py` – User interface, tar emot användarinput och visar data |
+| Andy    | `models/movie_model.py` – Movie-klass för att skapa och hantera filmobjekt |
 
-Klistra in följande rad:
+## Använda programmet
+1. Starta programmet.  
+2. Välj ett alternativ från menyn:  
+   - Hämta slumpmässig film (med genreval)  
+   - Visa favoriter  
+   - Redigera favoriter  
+   - Avsluta  
 
-API_KEY=HÄR SKA DET VARA EN API-NYCKEL
+Favoriter sparas i en JSON-fil (`data/favorites.json`) och kan redigeras eller raderas via UI.
 
+## Beroenden
+- Python 3.9+  
+- requests  
+- python-dotenv  
+- random  
+- json  
+- os  
 
-Spara filen
-
-💡 Du kan skapa en egen nyckel via:
-https://www.themoviedb.org/settings/api
-
-▶️ Kör programmet
-
-Starta programmet genom att köra:
-
-python movie_main/app.py
-
-📚 Använda bibliotek
-
-Externa bibliotek
-
-Bibliotek	Syfte
-requests	Hämtar data från TMDB API
-python-dotenv	Läser in miljövariabler (API-nyckeln) från .env
-random	Slumpar filmer och sidor i API-svaren
-json	Sparar och läser favoritfilmer till/från JSON
-pathlib	Hanterar filvägar på ett OS-oberoende sätt
-
-Standardbibliotek
-Bibliotek	Syfte
-os	Filvägar och miljöhantering
-typing	Typannoteringar (valfritt)
-
-👥 Team och ansvar
-Namn	Modul	Ansvar
-Fredrik	api/tmdb_api.py	Hanterar kommunikation med TMDB API och generering av filmdata
-Nick	storage/repo.py	Lagring till JSON – sparar, raderar och hanterar favoriter
-Youssef	app.py	Användargränssnitt (UI) – meny, val och utskrifter
-Andy	models/movie_model.py	Klass för filmobjekt – struktur, attribut och metoder
-🧠 Övrig information
-
-API: The Movie Database (TMDB)
-
-Lagring sker lokalt i data/favorites.json
-
-Programmet körs i terminalen
-
-Kräver Python 3.9 eller senare
