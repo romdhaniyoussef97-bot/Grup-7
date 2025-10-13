@@ -118,8 +118,3 @@ class App:
         if choice == "y":
             result = self.fav_manager.save_favorites(movie)
             print(result["message"])
-
-# --- Entry point for testing ---
-if __name__ == "__main__":
-    app = App()
-    app.run()
