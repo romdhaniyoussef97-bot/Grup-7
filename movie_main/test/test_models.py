@@ -15,3 +15,4 @@ def test_to_dict():
 
     
     assert movie.to_dict() == expected
+    
