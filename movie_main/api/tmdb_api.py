@@ -10,6 +10,7 @@ class TMDB_API:
         env_path = Path(__file__).resolve().parent.parent / ".env"
         load_dotenv(dotenv_path=env_path)
         self.API_KEY = os.getenv("API_KEY")
+        
         self.header = {
             "accept": "application/json",
             "Authorization": f"Bearer {self.API_KEY}"
@@ -57,8 +58,7 @@ class TMDB_API:
             ).json()['total_pages']
             
             random_page = random.randint(1, total_pages)
-            
-            query_params['page'] = random_page
+            query_params['page'] = min(random_page, 500)
             
             respons = requests.get(
                 url = base_url,
@@ -67,12 +67,13 @@ class TMDB_API:
             ).json()['results']
             
             movie = random.choice(respons)
+
             return {
                 "title" : movie.get('title', "No title available."),
-                "rating" : movie.get('vote_average', "No average avaiable."),
+                "rating" : movie.get('vote_average', "No average available."),
                 "releas_date" : movie.get("release_date", "No realase date available."),
-                "genre" : [],
-                "plot" : movie.get("overview", "No plot avaiable.")
+                "genre" : [val['name'] for val in self.genres if val['id'] in movie.get("genre_ids", [])],
+                "plot" : movie.get("overview", "No plot available.")
             }
     
         except Exception as e:
