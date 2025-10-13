@@ -71,7 +71,7 @@ class App:
             plot=movie_data.get("plot", "Okänd handling.")
         )
 
-        movie.show_info()
+        print(movie.show_info())
         self.ask_save(movie)
 
     # --- Option 2: Show favorites ---
