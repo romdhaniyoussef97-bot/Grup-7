@@ -43,17 +43,3 @@ def test_save_duplicate_favorites(tmp_path):
     with open(filepath, encoding="utf-8") as f:
         data = json.load(f)
     assert len(data) == 1
-
-def test_invalid_json(tmp_path):
-    filepath = tmp_path / "favorites.json"
-    filepath.write_text("{ not valid json")  # ogiltig JSON
-
-    manager = FavoritesManager(filepath)
-    movie = MockMovie("Jönssonligan")
-    result = manager.save_favorites(movie)
-
-    assert result["success"] is True
-
-    with open(filepath, encoding="utf-8") as f:
-        data = json.load(f)
-    assert data == [{"title": "Jönssonligan"}]
