@@ -20,7 +20,9 @@ class TMDB_API:
             url = "https://api.themoviedb.org/3/genre/movie/list?language=en",
             headers=self.header
         ).json()["genres"]
-        
+    
+    # The API takes id's to identify genres. Since the user doesn't know what each
+    # genre have we need a function to translate from text to id 
     def genre_query(self, genre_string):
         if not genre_string:
             return None
@@ -30,9 +32,15 @@ class TMDB_API:
         
         return(",".join(genre_ids))
     
+    # Function to send avaiable genres to the user
     def get_genres(self):
         genre_list = [genre['name'] for genre in self.genres]
         return (genre_list)
+
+    # The API doesn't have any random-function, hence we need to build one.
+    # We start by looking at the number of pages that exists given a specific query
+    # We then randomize a value from 1 to min(500, max_pages). 500 is the highest
+    # value the API accepts. 
 
     def get_random_movie(self, 
                          release_date_gte = None,
