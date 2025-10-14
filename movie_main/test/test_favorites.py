@@ -2,9 +2,6 @@ import sys
 import json
 import pytest
 
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
 from storage.repo import FavoritesManager
 
 
