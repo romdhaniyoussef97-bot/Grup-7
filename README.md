@@ -46,7 +46,7 @@ python movie_main/UI/app.py
 
 Favoriter sparas i en JSON-fil (`data/favorites.json`) och kan redigeras eller raderas via UI.
 
-## Beroenden
+## Bibliotek
 - Python 3.9+  
 - requests  
 - python-dotenv  
