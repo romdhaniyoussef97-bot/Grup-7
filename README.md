@@ -24,7 +24,7 @@ API_KEY=DIN_API_NYCKEL_HÄR
 
 4. **Kör programmet**
 ```bash
-python movie_main/UI/app.py
+python movie_main/main.py
 ```
 
 ## Team och ansvarsområden
